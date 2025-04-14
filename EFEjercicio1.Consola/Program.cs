@@ -83,7 +83,7 @@ namespace EFEjercicio1.Consola
             Console.Clear();
             Console.WriteLine("Deleting Drinks");
             Console.WriteLine("List of Drinks to Delete");
-            using (var context = new LibraryContext())
+            using (var context = new ConfectioneryContext())
             {
                 var drinks = context.Drinks
                     .OrderBy(d=>d.Id)
@@ -135,7 +135,7 @@ namespace EFEjercicio1.Consola
             var size = Console.ReadLine();
             Console.WriteLine("List of Confectioneries to select");
 
-            using (var context = new LibraryContext())
+            using (var context = new ConfectioneryContext())
             {
                 var confectioneriesList = context.Confectioneries
                     .OrderBy(c => c.Id)
@@ -202,7 +202,7 @@ namespace EFEjercicio1.Consola
         {
             Console.Clear();
             Console.WriteLine("List of Drinks");
-            using (var context = new LibraryContext())
+            using (var context = new ConfectioneryContext())
             {
                 var drinks = context.Drinks
                     .Include(d => d.Confectionery)
@@ -256,7 +256,7 @@ namespace EFEjercicio1.Consola
         {
             Console.Clear();
             Console.WriteLine("Edit an confectionery");
-            using (var context = new LibraryContext())
+            using (var context = new ConfectioneryContext())
             {
                 var confectioneries = context.Confectioneries
                     .OrderBy(c => c.Id)
@@ -314,7 +314,7 @@ namespace EFEjercicio1.Consola
         {
             Console.Clear();
             Console.WriteLine("Delete an confectionery");
-            using (var context = new LibraryContext())
+            using (var context = new ConfectioneryContext())
             {
                 var confectioneries = context.Confectioneries
                     .OrderBy(c => c.Id)
@@ -372,7 +372,7 @@ namespace EFEjercicio1.Consola
             Console.WriteLine("Adding a new Confectionery");
             Console.Write("Enter Name:");
             var name = Console.ReadLine();
-            using (var context = new LibraryContext())
+            using (var context = new ConfectioneryContext())
             {
                 bool exist = context.Confectioneries.Any(c => c.Name == name);
                 if (!exist)
@@ -413,7 +413,7 @@ namespace EFEjercicio1.Consola
         {
             Console.Clear();
             Console.WriteLine("List of Confectioneries");
-            using (var context = new LibraryContext())
+            using (var context = new ConfectioneryContext())
             {
                 var confectioneries = context.Confectioneries
                     .OrderBy(c => c.Name)
@@ -429,7 +429,7 @@ namespace EFEjercicio1.Consola
 
         private static void CreateDb()
         {
-            using (var context = new LibraryContext())
+            using (var context = new ConfectioneryContext())
             {
                 context.Database.EnsureCreated();
             }

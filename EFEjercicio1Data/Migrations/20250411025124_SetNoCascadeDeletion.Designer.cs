@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EFEjercicio1Data.Migrations
 {
-    [DbContext(typeof(LibraryContext))]
+    [DbContext(typeof(ConfectioneryContext))]
     [Migration("20250411025124_SetNoCascadeDeletion")]
     partial class SetNoCascadeDeletion
     {

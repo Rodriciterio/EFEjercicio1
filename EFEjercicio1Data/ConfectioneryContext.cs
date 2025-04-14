@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EFEjercicio1Data
 {
-    public class LibraryContext : DbContext
+    public class ConfectioneryContext : DbContext
     {
         public DbSet<Confectionery>Confectioneries { get; set; }
         public DbSet<Drink> Drinks { get; set; }

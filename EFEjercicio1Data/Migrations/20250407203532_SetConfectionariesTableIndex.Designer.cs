@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EFEjercicio1Data.Migrations
 {
-    [DbContext(typeof(LibraryContext))]
+    [DbContext(typeof(ConfectioneryContext))]
     [Migration("20250407203532_SetConfectionariesTableIndex")]
     partial class SetConfectionariesTableIndex
     {
