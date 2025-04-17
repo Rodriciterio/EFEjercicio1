@@ -11,7 +11,7 @@ namespace EFEjercicio1Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data Source= RODRIGO\\SQL2022; Initial Catalog=LibraryDb; Trusted_Connection=true; TrustServerCertificate=true;")
+            optionsBuilder.UseSqlServer("Data Source= .; Initial Catalog=LibraryDb; Trusted_Connection=true; TrustServerCertificate=true;")
                 .UseLazyLoadingProxies(false);
                 //.EnableSensitiveDataLogging() // Permite ver valores en las consultas
                 // .LogTo(Console.WriteLine, LogLevel.Information)
