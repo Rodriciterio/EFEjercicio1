@@ -75,7 +75,168 @@ namespace EFEjercicio1.Consola
 
         private static void EditDrinks()
         {
-            throw new NotImplementedException();
+            Console.Clear();
+            Console.WriteLine("Editing Drinks");
+            Console.WriteLine("list Of Drinks to Edit");
+
+            using (var context = new ConfectioneryContext())
+            {
+                var drinks = context.Drinks.OrderBy(b => b.Id)
+                    .Select(b => new
+                    {
+                        b.Id,
+                        b.Name
+                    }).ToList();
+                foreach (var item in drinks)
+                {
+                    Console.WriteLine($"{item.Id}-{item.Name}");
+                }
+                Console.Write("Enter DrinkID to edit (0 to Escape):");
+                int drinkId = int.Parse(Console.ReadLine()!);
+                if (drinkId < 0)
+                {
+                    Console.WriteLine("Invalid DrinkID... ");
+                    Console.ReadLine();
+                    return;
+                }
+                if (drinkId == 0)
+                {
+                    Console.WriteLine("Cancelled by user");
+                    Console.ReadLine();
+                    return;
+                }
+
+                var drinkInDb = context.Drinks.Include(b => b.Confectionery)
+                    .FirstOrDefault(b => b.Id == drinkId);
+                if (drinkInDb == null)
+                {
+                    Console.WriteLine("Drink does not exist...");
+                    Console.ReadLine();
+                    return;
+                }
+                Console.WriteLine($"Current Drink Name: {drinkInDb.Name}");
+                Console.Write("Enter New Name (or ENTER to Keep the same):");
+                var newName = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newName))
+                {
+                    drinkInDb.Name = newName;
+                }
+                Console.WriteLine($"Current Drink Size: {drinkInDb.Size}");
+                Console.Write("Enter New Size (or ENTER to Keep the same):");
+                var newSize = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newSize))
+                {
+                    drinkInDb.Size = newSize;
+                }
+
+                Console.WriteLine($"Current Drink Confectionery:{drinkInDb.Confectionery}");
+                Console.WriteLine("Available Confectionery");
+                var confectioneries = context.Confectioneries
+                    .OrderBy(a => a.Id)
+                    .ToList();
+                foreach (var confectionery in confectioneries)
+                {
+                    Console.WriteLine($"{confectionery.Id}-{confectionery}");
+                }
+                Console.Write("Enter ConfectioneryID (or ENTER to Keep the same or 0 New Author):");
+                var newConfectionery = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newConfectionery))
+                {
+                    if (!int.TryParse(newConfectionery, out int confectioneryId) || confectioneryId < 0)
+                    {
+                        Console.WriteLine("You enter an invalid ConfectioneryId");
+                        Console.ReadLine();
+                        return;
+                    }
+                    if (confectioneryId > 0)
+                    {
+                        var existConfectionery = context.Confectioneries.Any(a => a.Id == confectioneryId);
+                        if (!existConfectionery)
+                        {
+                            Console.WriteLine("ConfectioneryId not found");
+                            Console.ReadLine();
+                            return;
+                        }
+                        drinkInDb.ConfectioneryId = confectioneryId;
+
+                    }
+                    else
+                    {
+                        //Entering new confectionery
+                        Console.WriteLine("Adding a New Confectionery");
+                        Console.Write("Enter Name:");
+                        var name = Console.ReadLine();
+                        var existingConfectionery = context.Confectioneries.FirstOrDefault(
+                                a => a.Name.ToLower() == name!.ToLower());
+
+                        if (existingConfectionery is not null)
+                        {
+                            Console.WriteLine("You have entered an existing confectionery!!!");
+                            Console.WriteLine("Assigning his ConfectioneryID");
+
+                            drinkInDb.ConfectioneryId = existingConfectionery.Id;
+                        }
+                        else
+                        {
+                            Confectionery Confectionery = new Confectionery
+                            {
+                                Name = name ?? string.Empty
+                            };
+
+                            var validationContext = new ValidationContext(Confectionery);
+                            var errorMessages = new List<ValidationResult>();
+
+                            bool isValid = Validator.TryValidateObject(Confectionery, validationContext, errorMessages, true);
+
+                            if (isValid)
+                            {
+                                context.Confectioneries.Add(Confectionery);
+                                context.SaveChanges();
+                                drinkInDb.ConfectioneryId = Confectionery.Id;
+                            }
+                            else
+                            {
+                                foreach (var message in errorMessages)
+                                {
+                                    Console.WriteLine(message);
+                                }
+                            }
+
+                        }
+                    }
+
+                }
+
+                var originalDrink = context.Drinks
+                    .AsNoTracking()
+                    .FirstOrDefault(a => a.Id == drinkInDb.Id);
+
+                Console.Write($"Are you sure to edit \"{originalDrink!.Name}\"? (y/n):");
+                var confirm = Console.ReadLine();
+                try
+                {
+                    if (confirm?.ToLower() == "y")
+                    {
+                        context.SaveChanges();
+                        Console.WriteLine("Drink successfully edited");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Operation cancelled by user");
+                    }
+
+                }
+                catch (Exception ex)
+                {
+
+                    Console.WriteLine(ex.Message);
+                }
+                Console.ReadLine();
+                return;
+
+
+            }
+
         }
 
         private static void DeleteDrinks()
