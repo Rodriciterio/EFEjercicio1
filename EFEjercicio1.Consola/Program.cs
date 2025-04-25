@@ -333,8 +333,6 @@ namespace EFEjercicio1.Consola
                 {
                     bool exist = context.Drinks.Any(d => d.Name.ToLower() == name!.ToLower() && d.Size.ToLower() == size!.ToLower()
                            && d.ConfectioneryId == confectioneryId);
-                    //var existingDrink = context.Drinks.FirstOrDefault(d => d.Name == name && d.Size == size
-                    //&& d.ConfectioneryId == confectioneryId);
 
                     if (!exist)
                     {
