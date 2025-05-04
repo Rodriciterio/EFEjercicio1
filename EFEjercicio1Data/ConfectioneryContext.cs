@@ -48,6 +48,8 @@ namespace EFEjercicio1Data
                 };
                 entity.HasData(drinkList);
             });
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ConfectioneryContext).Assembly);
         }
     }
 }

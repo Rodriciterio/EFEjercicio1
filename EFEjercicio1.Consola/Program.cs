@@ -663,9 +663,22 @@ namespace EFEjercicio1.Consola
                         confectioneryInDb.Id);
                     if (!exist)
                     {
-                        _service.Save(confectioneryInDb);
-                        Console.WriteLine("Confectionery successfully edited");
+                        var confectioneryValidator = new ConfectioneriesValidator();
+                        var result = confectioneryValidator.Validate(confectioneryInDb);
 
+                        if (result.IsValid)
+                        {
+                            _service.Save(confectioneryInDb);
+                            Console.WriteLine("Confectionery successfully edited");
+                        }
+                        else
+                        {
+                            foreach (var message in result.Errors)
+                            {
+                                Console.WriteLine(message);
+                            }
+                        }
+                        
                     }
                     else
                     {
@@ -759,19 +772,18 @@ namespace EFEjercicio1.Consola
                         Name = name ?? string.Empty
                     };
 
-                    var validationContext = new ValidationContext(confectionery);
-                    var errorMessages = new List<ValidationResult>();
+                    var confectioneryValidator = new ConfectioneriesValidator();
 
-                    bool isValid = Validator.TryValidateObject(confectionery, validationContext, errorMessages, true);
+                    var result = confectioneryValidator.Validate(confectionery);
 
-                    if (isValid)
+                    if (result.IsValid)
                     {
                         _service.Save(confectionery);
                         Console.WriteLine("Confectionery Succesfully Added");
                     }
                     else
                     {
-                        foreach (var message in errorMessages)
+                        foreach (var message in result.Errors)
                         {
                             Console.WriteLine(message);
                         }
