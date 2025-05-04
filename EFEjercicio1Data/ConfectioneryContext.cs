@@ -6,13 +6,22 @@ namespace EFEjercicio1Data
 {
     public class ConfectioneryContext : DbContext
     {
+        public ConfectioneryContext(DbContextOptions options) : base(options)
+        {
+        }
+
+        protected ConfectioneryContext()
+        {
+        }
+
         public DbSet<Confectionery>Confectioneries { get; set; }
         public DbSet<Drink> Drinks { get; set; }
 
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data Source= .; Initial Catalog=ConfectioneryDb; Trusted_Connection=true; TrustServerCertificate=true;")
-                .UseLazyLoadingProxies(false);
+            //optionsBuilder.UseSqlServer("Data Source= .; Initial Catalog=ConfectioneryDb; Trusted_Connection=true; TrustServerCertificate=true;")
+            //    .UseLazyLoadingProxies(false);
                 //.EnableSensitiveDataLogging() // Permite ver valores en las consultas
                 // .LogTo(Console.WriteLine, LogLevel.Information)
                 // 

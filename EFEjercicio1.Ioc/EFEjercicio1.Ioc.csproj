@@ -1,20 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.11.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EFEjercicio1.Ioc\EFEjercicio1.Ioc.csproj" />
+    <ProjectReference Include="..\EFEjercicio1.Service\EFEjercicio1.Service.csproj" />
     <ProjectReference Include="..\EFEjercicio1Data\EFEjercicio1Data.csproj" />
-    <ProjectReference Include="..\EFEjercicio1Entities\EFEjercicio1Entities.csproj" />
   </ItemGroup>
 
 </Project>
