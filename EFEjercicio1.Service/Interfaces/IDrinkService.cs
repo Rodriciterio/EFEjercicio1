@@ -10,6 +10,7 @@ namespace EFEjercicio1.Service.Interfaces
         Drink? GetById(int drinkId, bool tracked = false);
         void Save(Drink drink);
         Drink? GetByNameAndConfectioneryId(string name, int confectioneryId);
+        void Edit(Drink drink);
 
     }
 }

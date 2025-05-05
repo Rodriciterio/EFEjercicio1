@@ -1,5 +1,6 @@
 ﻿using EFEjercicio1.Service.Interfaces;
 using EFEjercicio1Data.Interfaces;
+using EFEjercicio1Data.Repositories;
 using EFEjercicio1Entities;
 
 namespace EFEjercicio1.Service.Services
@@ -48,6 +49,11 @@ namespace EFEjercicio1.Service.Services
         public Drink? GetByNameAndConfectioneryId(string name, int confectioneryId)
         {
             return _repository.GetByNameAndConfectioneryId(name, confectioneryId);
+        }
+
+        public void Edit(Drink drink)
+        {
+            _repository.Edit(drink);
         }
 
     }

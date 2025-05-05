@@ -19,6 +19,7 @@ namespace EFEjercicio1Data.Repositories
             return sortedBy switch
             {
                 "Name" => query.OrderBy(c => c.Name).ToList(),
+                "Id" => query.OrderBy(c => c.Id).ToList(),
                 _ => query.OrderBy(c => c.Id).ToList(),
             };
         }

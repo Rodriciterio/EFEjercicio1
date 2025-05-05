@@ -66,182 +66,166 @@ namespace EFEjercicio1.Consola
                     case "3":
                         DeleteDrinks();
                         break;
-                        //case "4":
-                        //    EditDrinks();
-                        //    break;
-                        //case "r":
-                        //    return;
-                        //default:
-                        //    break;
+                    case "4":
+                        EditDrinks();
+                        break;
+                    case "r":
+                        return;
+                    default:
+                        break;
                 }
             } while (true);
         }
 
-        //private static void EditDrinks()
-        //{
-        //    Console.Clear();
-        //    Console.WriteLine("Editing Drinks");
-        //    Console.WriteLine("list Of Drinks to Edit");
+        private static void EditDrinks()
+        {
+            Console.Clear();
+            Console.WriteLine("Editing Drinks");
+            Console.WriteLine("List of Drinks to Edit");
 
-        //    using (var context = new ConfectioneryContext())
-        //    {
-        //        var drinks = context.Drinks.OrderBy(b => b.Id)
-        //            .Select(b => new
-        //            {
-        //                b.Id,
-        //                b.Name
-        //            }).ToList();
-        //        foreach (var item in drinks)
-        //        {
-        //            Console.WriteLine($"{item.Id}-{item.Name}");
-        //        }
-        //        Console.Write("Enter DrinkID to edit (0 to Escape):");
-        //        int drinkId = int.Parse(Console.ReadLine()!);
-        //        if (drinkId < 0)
-        //        {
-        //            Console.WriteLine("Invalid DrinkID... ");
-        //            Console.ReadLine();
-        //            return;
-        //        }
-        //        if (drinkId == 0)
-        //        {
-        //            Console.WriteLine("Cancelled by user");
-        //            Console.ReadLine();
-        //            return;
-        //        }
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var _service = scope.ServiceProvider.GetRequiredService<IDrinkService>();
+                var _serviceC = scope.ServiceProvider.GetRequiredService<IConfectioneryService>();
 
-        //        var drinkInDb = context.Drinks.Include(b => b.Confectionery)
-        //            .FirstOrDefault(b => b.Id == drinkId);
-        //        if (drinkInDb == null)
-        //        {
-        //            Console.WriteLine("Drink does not exist...");
-        //            Console.ReadLine();
-        //            return;
-        //        }
-        //        Console.WriteLine($"Current Drink Name: {drinkInDb.Name}");
-        //        Console.Write("Enter New Name (or ENTER to Keep the same):");
-        //        var newName = Console.ReadLine();
-        //        if (!string.IsNullOrEmpty(newName))
-        //        {
-        //            drinkInDb.Name = newName;
-        //        }
-        //        Console.WriteLine($"Current Drink Size: {drinkInDb.Size}");
-        //        Console.Write("Enter New Size (or ENTER to Keep the same):");
-        //        var newSize = Console.ReadLine();
-        //        if (!string.IsNullOrEmpty(newSize))
-        //        {
-        //            drinkInDb.Size = newSize;
-        //        }
+                var drinks = _service.GetAll();
+                foreach (var item in drinks)
+                {
+                    Console.WriteLine($"{item.Id}-{item.Name}");
+                }
 
-        //        Console.WriteLine($"Current Drink Confectionery:{drinkInDb.Confectionery}");
-        //        Console.WriteLine("Available Confectionery");
-        //        var confectioneries = context.Confectioneries
-        //            .OrderBy(a => a.Id)
-        //            .ToList();
-        //        foreach (var confectionery in confectioneries)
-        //        {
-        //            Console.WriteLine($"{confectionery.Id}-{confectionery}");
-        //        }
-        //        Console.Write("Enter ConfectioneryID (or ENTER to Keep the same or 0 New Author):");
-        //        var newConfectionery = Console.ReadLine();
-        //        if (!string.IsNullOrEmpty(newConfectionery))
-        //        {
-        //            if (!int.TryParse(newConfectionery, out int confectioneryId) || confectioneryId < 0)
-        //            {
-        //                Console.WriteLine("You enter an invalid ConfectioneryId");
-        //                Console.ReadLine();
-        //                return;
-        //            }
-        //            if (confectioneryId > 0)
-        //            {
-        //                var existConfectionery = context.Confectioneries.Any(a => a.Id == confectioneryId);
-        //                if (!existConfectionery)
-        //                {
-        //                    Console.WriteLine("ConfectioneryId not found");
-        //                    Console.ReadLine();
-        //                    return;
-        //                }
-        //                drinkInDb.ConfectioneryId = confectioneryId;
+                Console.Write("Enter DrinkID to edit (0 to Escape):");
+                int drinkId = int.Parse(Console.ReadLine()!);
+                if (drinkId == 0)
+                {
+                    Console.WriteLine("Cancelled by user");
+                    Console.ReadLine();
+                    return;
+                }
 
-        //            }
-        //            else
-        //            {
-        //                //Entering new confectionery
-        //                Console.WriteLine("Adding a New Confectionery");
-        //                Console.Write("Enter Name:");
-        //                var name = Console.ReadLine();
-        //                var existingConfectionery = context.Confectioneries.FirstOrDefault(
-        //                        a => a.Name.ToLower() == name!.ToLower());
+                var drinkInDb = _service.GetById(drinkId, tracked: true);
+                if (drinkInDb == null)
+                {
+                    Console.WriteLine("Drink does not exist...");
+                    Console.ReadLine();
+                    return;
+                }
 
-        //                if (existingConfectionery is not null)
-        //                {
-        //                    Console.WriteLine("You have entered an existing confectionery!!!");
-        //                    Console.WriteLine("Assigning his ConfectioneryID");
+                Console.WriteLine($"Current Drink Name: {drinkInDb.Name}");
+                Console.Write("Enter New Name (or ENTER to Keep the same):");
+                var newName = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newName))
+                {
+                    drinkInDb.Name = newName;
+                }
 
-        //                    drinkInDb.ConfectioneryId = existingConfectionery.Id;
-        //                }
-        //                else
-        //                {
-        //                    Confectionery Confectionery = new Confectionery
-        //                    {
-        //                        Name = name ?? string.Empty
-        //                    };
+                Console.WriteLine($"Current Drink Size: {drinkInDb.Size}");
+                Console.Write("Enter New Size (or ENTER to Keep the same):");
+                var newSize = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newSize))
+                {
+                    drinkInDb.Size = newSize;
+                }
 
-        //                    var validationContext = new ValidationContext(Confectionery);
-        //                    var errorMessages = new List<ValidationResult>();
+                Console.WriteLine($"Current Drink Confectionery: {drinkInDb.Confectionery?.Name}");
+                Console.WriteLine("Available Confectioneries");
+                var confectioneries = _serviceC.GetAll("Id");
+                foreach (var confectionery in confectioneries)
+                {
+                    Console.WriteLine($"{confectionery.Id}-{confectionery.Name}");
+                }
 
-        //                    bool isValid = Validator.TryValidateObject(Confectionery, validationContext, errorMessages, true);
+                Console.Write("Enter ConfectioneryID (or ENTER to Keep the same or 0 for New Confectionery):");
+                var newConfectioneryInput = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newConfectioneryInput))
+                {
+                    if (!int.TryParse(newConfectioneryInput, out int confectioneryId) || confectioneryId < 0)
+                    {
+                        Console.WriteLine("Invalid ConfectioneryId entered");
+                        Console.ReadLine();
+                        return;
+                    }
 
-        //                    if (isValid)
-        //                    {
-        //                        context.Confectioneries.Add(Confectionery);
-        //                        context.SaveChanges();
-        //                        drinkInDb.ConfectioneryId = Confectionery.Id;
-        //                    }
-        //                    else
-        //                    {
-        //                        foreach (var message in errorMessages)
-        //                        {
-        //                            Console.WriteLine(message);
-        //                        }
-        //                    }
+                    if (confectioneryId > 0)
+                    {
+                        var existConfectionery = _serviceC.GetById(confectioneryId);
+                        if (existConfectionery == null)
+                        {
+                            Console.WriteLine("ConfectioneryId not found");
+                            Console.ReadLine();
+                            return;
+                        }
 
-        //                }
-        //            }
+                        drinkInDb.ConfectioneryId = confectioneryId;
+                    }
+                    else
+                    {
+                        // Entering a new confectionery
+                        Console.WriteLine("Adding a New Confectionery");
+                        Console.Write("Enter Name:");
+                        var confectioneryName = Console.ReadLine();
+                        var existingConfectionery = _serviceC.GetByName(confectioneryName);
 
-        //        }
+                        if (existingConfectionery != null)
+                        {
+                            Console.WriteLine("This confectionery already exists! Assigning its ID.");
+                            drinkInDb.ConfectioneryId = existingConfectionery.Id;
+                        }
+                        else
+                        {
+                            var newConfectionery = new Confectionery
+                            {
+                                Name = confectioneryName ?? string.Empty
+                            };
 
-        //        var originalDrink = context.Drinks
-        //            .AsNoTracking()
-        //            .FirstOrDefault(a => a.Id == drinkInDb.Id);
+                            var validationContext = new ValidationContext(newConfectionery);
+                            var errorMessages = new List<ValidationResult>();
 
-        //        Console.Write($"Are you sure to edit \"{originalDrink!.Name}\"? (y/n):");
-        //        var confirm = Console.ReadLine();
-        //        try
-        //        {
-        //            if (confirm?.ToLower() == "y")
-        //            {
-        //                context.SaveChanges();
-        //                Console.WriteLine("Drink successfully edited");
-        //            }
-        //            else
-        //            {
-        //                Console.WriteLine("Operation cancelled by user");
-        //            }
+                            bool isValid = Validator.TryValidateObject(newConfectionery, validationContext, errorMessages, true);
+                            if (isValid)
+                            {
+                                _serviceC.Save(newConfectionery);
+                                drinkInDb.ConfectioneryId = newConfectionery.Id;
+                            }
+                            else
+                            {
+                                foreach (var message in errorMessages)
+                                {
+                                    Console.WriteLine(message);
+                                }
+                            }
+                        }
+                    }
+                }
 
-        //        }
-        //        catch (Exception ex)
-        //        {
+                var originalDrink = _service.GetById(drinkInDb.Id, tracked: false);
 
-        //            Console.WriteLine(ex.Message);
-        //        }
-        //        Console.ReadLine();
-        //        return;
+                Console.Write($"Are you sure you want to edit \"{originalDrink!.Name} - {originalDrink.Size}\"? (y/n):");
+                var confirm = Console.ReadLine();
+
+                try
+                {
+                    if (confirm?.ToLower() == "y")
+                    {
+                        _service.Edit(drinkInDb); 
+                        Console.WriteLine("Drink successfully edited");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Operation cancelled by user");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
+
+                Console.ReadLine();
+                return;
+            }
+        }
 
 
-        //    }
-
-        //}
 
         private static void DeleteDrinks()
         {

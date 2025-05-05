@@ -35,12 +35,11 @@ namespace EFEjercicio1Data.Repositories
 
         public Drink? GetById(int drinkId, bool tracked = false)
         {
-            return tracked
-                ? _context.Drinks
-                    .FirstOrDefault(d => d.Id == drinkId)
-                : _context.Drinks
-                    .AsNoTracking()
-                    .FirstOrDefault(d => d.Id == drinkId);
+            var query = _context.Drinks
+                .Include(d => d.Confectionery)
+                .Where(d => d.Id == drinkId);
+
+            return tracked ? query.FirstOrDefault() : query.AsNoTracking().FirstOrDefault();
         }
 
         public bool Exist(string name, string size, int confectioneryId, int? excludeId = null)
