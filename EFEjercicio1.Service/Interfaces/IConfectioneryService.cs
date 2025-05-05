@@ -13,5 +13,6 @@ namespace EFEjercicio1.Service.Interfaces
         void LoadDrinks(Confectionery confectionery);
         List<Confectionery> GetAllWithDrinks();
         List<IGrouping<int, Drink>> ConfectioneriesGroupIdDrinks();
+        Confectionery? GetByName(string name);
     }
 }

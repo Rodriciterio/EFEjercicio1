@@ -64,5 +64,11 @@ namespace EFEjercicio1.Service.Services
                 _repository.Edit(confectionery);
             }
         }
+
+        public Confectionery? GetByName(string name)
+        {
+            return _repository.GetByName(name);
+        }
+
     }
 }

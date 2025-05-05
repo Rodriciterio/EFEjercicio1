@@ -15,5 +15,6 @@ namespace EFEjercicio1Data.Interfaces
         void LoadDrinks(Confectionery confectionery);
         List<Confectionery> GetAllWithDrinks();
         List<IGrouping<int, Drink>> ConfectioneriesGroupIdDrinks();
+        Confectionery? GetByName(string name);
     }
 }

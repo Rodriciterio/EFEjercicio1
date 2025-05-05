@@ -45,9 +45,9 @@ namespace EFEjercicio1Data.Repositories
         public bool Exist(string name, int? excludeId = null)
         {
             return excludeId.HasValue
-                    ? _context.Confectioneries.Any(c => c.Name == name &&
+                    ? _context.Confectioneries.Any(c => c.Name.ToLower() == name.ToLower() &&
                     c.Id == excludeId)
-                    : _context.Confectioneries.Any(c => c.Name == name);
+                    : _context.Confectioneries.Any(c => c.Name.ToLower() == name.ToLower());
         }
 
         public void Add(Confectionery confectionery)
@@ -97,6 +97,12 @@ namespace EFEjercicio1Data.Repositories
         {
             return _context.Drinks.
                     GroupBy(c => c.ConfectioneryId).ToList();
+        }
+
+        public Confectionery? GetByName(string name)
+        {
+            return _context.Confectioneries
+                .FirstOrDefault(c => c.Name.ToLower() == name.ToLower());
         }
     }
 }

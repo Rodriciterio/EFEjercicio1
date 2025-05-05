@@ -18,8 +18,12 @@ namespace EFEjercicio1.Ioc
 
             services.AddDbContext<ConfectioneryContext>(options =>
                 options.UseSqlServer(connectionString));
+
             services.AddScoped<IConfectioneriesRepository, ConfectioneriesRepository>();
             services.AddScoped<IConfectioneryService, ConfectioneryService>();
+
+            services.AddScoped<IDrinksRepository, DrinksRepository>();
+            services.AddScoped<IDrinkService, DrinkService>();
 
             return services.BuildServiceProvider();
         }

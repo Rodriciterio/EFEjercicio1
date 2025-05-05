@@ -8,7 +8,7 @@ namespace EFEjercicio1.Consola.Validators
         public DrinksValidator()
         {
             RuleFor(d => d.Name).NotEmpty().WithMessage("El nombre es requerido")
-                .MinimumLength(8).WithMessage("El nombre debe tener almenos de 8 caracteres")
+                .MinimumLength(6).WithMessage("El nombre debe tener almenos de 6 caracteres")
                 .MaximumLength(100).WithMessage("El nombre no puede tener mas de 100 caracteres");
 
             RuleFor(d => d.Size).NotEmpty().WithMessage("El nombre es requerido")
