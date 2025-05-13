@@ -16,13 +16,14 @@ namespace EFEjercicio1Data.Repositories
         public List<Confectionery> GetAll(string sortedBy = "Name")
         {
             IQueryable<Confectionery> query = _context.Confectioneries.AsNoTracking();
+
             return sortedBy switch
             {
                 "Name" => query.OrderBy(c => c.Name).ToList(),
                 "Id" => query.OrderBy(c => c.Id).ToList(),
                 _ => query.OrderBy(c => c.Id).ToList(),
             };
-        }
+        }   
 
         public List<Confectionery> GetAll()
         {
@@ -54,32 +55,29 @@ namespace EFEjercicio1Data.Repositories
         public void Add(Confectionery confectionery)
         {
             _context.Confectioneries.Add(confectionery);
-            _context.SaveChanges();
         }
 
         public void Delete(int confectioneryId)
         {
-            var confectioneryInDb = GetById(confectioneryId, true);
+            var confectioneryInDb = GetById(confectioneryId);
             if (confectioneryInDb != null)
             {
-                _context.Confectioneries.Remove(confectioneryInDb);
-                _context.SaveChanges();
+                _context.Entry(confectioneryInDb).State = EntityState.Deleted;
             }
 
         }
 
-        public void Edit(Confectionery confectionery)
+        public void Update(Confectionery confectionery)
         {
-            var confectioneryInDb = GetById(confectionery.Id, true);
+            var confectioneryInDb = GetById(confectionery.Id);
             if (confectioneryInDb != null)
             {
                 confectioneryInDb.Name = confectionery.Name;
-
-                _context.SaveChanges();
+                _context.Entry(confectioneryInDb).State = EntityState.Modified;
             }
         }
 
-        public bool HasDrinks(int confectioneryId)
+        public bool HasDependencies(int confectioneryId)
         {
             return _context.Drinks.Any(d => d.ConfectioneryId == confectioneryId);
         }
@@ -94,16 +92,16 @@ namespace EFEjercicio1Data.Repositories
             return _context.Confectioneries.Include(c => c.Drinks).ToList();
         }
 
-        public List<IGrouping<int, Drink>> ConfectioneriesGroupIdDrinks()
-        {
-            return _context.Drinks.
-                    GroupBy(c => c.ConfectioneryId).ToList();
-        }
-
         public Confectionery? GetByName(string name)
         {
             return _context.Confectioneries
                 .FirstOrDefault(c => c.Name.ToLower() == name.ToLower());
+        }
+
+
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
         }
     }
 }

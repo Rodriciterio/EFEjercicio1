@@ -1,18 +1,18 @@
-﻿using EFEjercicio1Entities;
+﻿using EFEjercicio1.Service.DTOs.Confectionery;
+using EFEjercicio1Entities;
 
 namespace EFEjercicio1.Service.Interfaces
 {
     public interface IConfectioneryService
     {
-        void Save(Confectionery confectionery);
-        void Delete(int confectioneryId);
+        bool Create(ConfectioneryCreateDto confectioneryDto, out List<string> errors);
+        bool Update(ConfectioneryUpdateDto confectioneryDto, out List<string> errors);
+        bool Delete(int confectioneryId, out List<string> errors);
         bool Exist(string name, int? excludeId = null);
-        List<Confectionery> GetAll(string sortedBy = "Name");
-        Confectionery? GetById(int confectioneryId, bool tracked = false);
-        bool HasDrinks(int confectioneryId);
-        void LoadDrinks(Confectionery confectionery);
-        List<Confectionery> GetAllWithDrinks();
-        List<IGrouping<int, Drink>> ConfectioneriesGroupIdDrinks();
-        Confectionery? GetByName(string name);
+        List<ConfectioneryDto> GetAll(string sortedBy = "Name");
+        ConfectioneryDto? GetById(int confectioneryId);
+        ConfectioneryDto? GetByName(string name);
+        List<ConfectioneryWithDrinksDto> GetAllWithDrinks();
+        List<ConfectioneryDrinksCountDto> ConfectioneriesWithDrinksCount();
     }
 }
