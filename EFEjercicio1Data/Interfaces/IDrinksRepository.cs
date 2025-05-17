@@ -6,10 +6,11 @@ namespace EFEjercicio1Data.Interfaces
     {
         void Add(Drink drink);
         void Delete(int drinkId);
-        void Edit(Drink drink);
+        bool Exist(string drinkName, int drinkConfectioneryId, int? excludeId = null);
+
         List<Drink> GetAll(string sortedBy = "Name");
         Drink? GetById(int drinkId, bool tracked = false);
-        Drink? GetByNameAndConfectioneryId(string name, int confectioneryId);
-        bool Exist(string name, string size, int confectioneryId, int? excludeId = null);
+        void Update(Drink drink);
+        void SaveChanges();
     }
 }

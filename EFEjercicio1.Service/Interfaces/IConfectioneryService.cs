@@ -5,6 +5,7 @@ namespace EFEjercicio1.Service.Interfaces
 {
     public interface IConfectioneryService
     {
+        bool Create(ConfectioneryCreateDto confectioneryDto, out ConfectioneryDto? confectioneryCreated, out List<string> errors);
         bool Create(ConfectioneryCreateDto confectioneryDto, out List<string> errors);
         bool Update(ConfectioneryUpdateDto confectioneryDto, out List<string> errors);
         bool Delete(int confectioneryId, out List<string> errors);

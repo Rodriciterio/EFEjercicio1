@@ -1,6 +1,6 @@
 ﻿namespace EFEjercicio1.Service.DTOs.Drink
 {
-    public class DrinkDto
+    public class DrinkUpdateDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;

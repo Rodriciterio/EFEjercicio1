@@ -25,6 +25,8 @@ namespace EFEjercicio1.Ioc
             services.AddScoped<IDrinksRepository, DrinksRepository>();
             services.AddScoped<IDrinkService, DrinkService>();
 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             return services.BuildServiceProvider();
         }
     }

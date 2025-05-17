@@ -1,60 +1,110 @@
-﻿using EFEjercicio1.Service.Interfaces;
-using EFEjercicio1Data.Interfaces;
-using EFEjercicio1Data.Repositories;
+﻿using EFEjercicio1.Service.DTOs.Confectionery;
+using EFEjercicio1.Service.DTOs.Drink;
+using EFEjercicio1.Service.Interfaces;
+using EFEjercicio1.Service.Mappers;
+using EFEjercicio1.Service.Validators;
+using EFEjercicio1Data;
 using EFEjercicio1Entities;
 
 namespace EFEjercicio1.Service.Services
 {
     public class DrinkService : IDrinkService
     {
-        private readonly IDrinksRepository _repository = null!;
+        private readonly IUnitOfWork _unitOfWork = null!;
 
-        public DrinkService(IDrinksRepository repository)
+        public DrinkService(IUnitOfWork unitOfWork)
         {
-            _repository = repository;
+            _unitOfWork = unitOfWork;
         }
 
-        public void Delete(int drinkId)
+        public bool Delete(int drinkId, out List<string> errors)
         {
-            _repository.Delete(drinkId);
-        }
-
-        public bool Exist(string name, string size, int confectioneryId, int? excludeId = null)
-        {
-            return _repository.Exist(name, size, confectioneryId, excludeId);
-        }
-
-        public List<Drink> GetAll(string sortedBy = "name")
-        {
-            return _repository.GetAll(sortedBy);
-        }
-
-        public Drink? GetById(int drinkId, bool tracked = false)
-        {
-            return _repository.GetById(drinkId, tracked);
-        }
-
-        public void Save(Drink drink)
-        {
-            if (drink.Id == 0)
+            errors = new List<string>();
+            if (_unitOfWork.Drinks.GetById(drinkId) is null)
             {
-                _repository.Add(drink);
+                errors.Add("Drink ID not found");
+                return false;
             }
-            else
+            _unitOfWork.Drinks.Delete(drinkId);
+            _unitOfWork.Complete();
+            return true;
+        }
+
+        public bool Exist(string name, int confectioneryId, int? excludeId = null)
+        {
+            return _unitOfWork.Drinks.Exist(name, confectioneryId, excludeId);
+        }
+
+        public List<DrinkListDto> GetAll(string sortedBy = "name")
+        {
+            var drinks = _unitOfWork.Drinks.GetAll(sortedBy);
+            return drinks.Select(DrinkMapper.ToDrinkListDto).ToList();
+        }
+
+        public DrinkDto? GetById(int drinkId)
+        {
+            var drink = _unitOfWork.Drinks.GetById(drinkId);
+            return drink is null ? null : DrinkMapper.ToDto(drink);
+        }
+
+        //public Drink? GetByNameAndConfectioneryId(string name, int confectioneryId)
+        //{
+        //    return _unitOfWork.GetByNameAndConfectioneryId(name, confectioneryId);
+        //}
+
+        public List<DrinksWithConfectioneryDto> DrinksGroupByConfectionery()
+        {
+            var drinksWithConfectioneries = _unitOfWork.Drinks.GetAll();
+            var grouped = drinksWithConfectioneries
+                .GroupBy(d => new { d.Confectionery!.Id, d.Confectionery.Name })
+                .Select(g => new DrinksWithConfectioneryDto
+                {
+                    Confectionery = new ConfectioneryDto
+                    {
+                        Id = g.Key.Id,
+                        Name = g.Key.Name
+                    },
+                    Drinks = g.Select(DrinkMapper.ToDto).ToList()
+                }).ToList();
+            return grouped;
+        }
+
+        public bool Create(DrinkCreateDto drinkDto, out List<string> errors)
+        {
+            errors = new List<string>();
+            Drink drink = DrinkMapper.ToEntity(drinkDto);
+            if (_unitOfWork.Drinks.Exist(drink.Name, drink.ConfectioneryId))
             {
-                _repository.Edit(drink);
+                errors.Add("Drink already exist");
+                return false;
             }
+            DrinkValidator drinkValidator = new DrinkValidator();
+            if (!UniversalValidator.IsValid(drink, drinkValidator, out errors))
+            {
+                return false;
+            }
+            _unitOfWork.Drinks.Add(drink);
+            _unitOfWork.Complete();
+            return true;
         }
 
-        public Drink? GetByNameAndConfectioneryId(string name, int confectioneryId)
+        public bool Update(DrinkUpdateDto drinkDto, out List<string> errors)
         {
-            return _repository.GetByNameAndConfectioneryId(name, confectioneryId);
+            errors = new List<string>();
+            Drink drink = DrinkMapper.ToEntity(drinkDto);
+            if (_unitOfWork.Drinks.Exist(drink.Name, drink.ConfectioneryId, drink.Id))
+            {
+                errors.Add("Drink already exist");
+                return false;
+            }
+            DrinkValidator drinkValidator = new DrinkValidator();
+            if (!UniversalValidator.IsValid(drink, drinkValidator, out errors))
+            {
+                return false;
+            }
+            _unitOfWork.Drinks.Update(drink);
+            _unitOfWork.Complete();
+            return true;
         }
-
-        public void Edit(Drink drink)
-        {
-            _repository.Edit(drink);
-        }
-
     }
 }

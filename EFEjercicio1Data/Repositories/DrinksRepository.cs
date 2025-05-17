@@ -42,24 +42,18 @@ namespace EFEjercicio1Data.Repositories
             return tracked ? query.FirstOrDefault() : query.AsNoTracking().FirstOrDefault();
         }
 
-        public bool Exist(string name, string size, int confectioneryId, int? excludeId = null)
+        public bool Exist(string drinkName, int drinkConfectioneryId, int? excludeId = null)
         {
-            return excludeId.HasValue
-                ? _context.Drinks.Any(d => d.Name.ToLower() == name.ToLower()
-                                        && d.Size.ToLower() == size.ToLower()
-                                        && d.ConfectioneryId == confectioneryId
-                                        && d.Id != excludeId)
-                : _context.Drinks.Any(d => d.Name.ToLower() == name.ToLower()
-                                        && d.Size.ToLower() == size.ToLower()
-                                        && d.ConfectioneryId == confectioneryId);
+            return excludeId.HasValue ? _context.Drinks.Any(d => d.Name == drinkName
+                   && d.ConfectioneryId == drinkConfectioneryId && d.Id != excludeId)
+               : _context.Drinks.Any(d => d.Name == drinkName
+                   && d.ConfectioneryId == drinkConfectioneryId);
         }
 
 
         public void Add(Drink drink)
         {
             _context.Drinks.Add(drink);
-            _context.SaveChanges();
-
         }
 
         public void Delete(int drinkId)
@@ -68,30 +62,25 @@ namespace EFEjercicio1Data.Repositories
             if (drinkInDb != null)
             {
                 _context.Drinks.Remove(drinkInDb);
-                _context.SaveChanges();
-
             }
         }
 
-        public void Edit(Drink drink)
+        public void Update(Drink drink)
         {
-            var drinkInDb = GetById(drink.Id, true);
+            var drinkInDb = GetById(drink.Id);
             if (drinkInDb != null)
             {
+                drinkInDb.Id = drink.Id;
                 drinkInDb.Name = drink.Name;
+                drinkInDb.ConfectioneryId = drink.ConfectioneryId;
                 drinkInDb.Size = drink.Size;
-
-                _context.SaveChanges();
+                _context.Entry(drinkInDb).State = EntityState.Modified;
             }
         }
 
-        public Drink? GetByNameAndConfectioneryId(string name, int confectioneryId)
+        public void SaveChanges()
         {
-            return _context.Drinks
-                .AsNoTracking()
-                .FirstOrDefault(d => d.Name.ToLower() == name.ToLower()
-                                  && d.ConfectioneryId == confectioneryId);
+            _context.SaveChanges();
         }
-
     }
 }
